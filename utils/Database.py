@@ -73,6 +73,7 @@ class Database:
             print('[sql AddRow]', e)
             return False
 
+
     def DeleteRow(self, param, value, table_name) -> bool:
         '''
         DELETE FROM {table_name} WHERE {param} = {value};
@@ -86,6 +87,7 @@ class Database:
         except Exception as e:
             print('[sql Delete]', e)
             return False
+
 
     def GetOne(self, data, table_name, find_param, find_value) -> str|bool:
         '''
@@ -107,6 +109,7 @@ class Database:
             print(f"[sql GetOne] {e}")
             return False
 
+
     def GetAll(self, data, table_name, find_param, find_value) -> str|bool:
         '''
         f'SELECT {data} FROM {table_name} WHERE {find_param} = {find_value}'
@@ -124,32 +127,12 @@ class Database:
             print(f"[sql GetAll] {e}")
             return False
 
+
     def GetConnect(self):
         return self.connect
+
 
     def GetCursor(self):
         return self.cursor
 
-<<<<<<< HEAD
-class UserRepo():
-    '''
-    UserRepository — акцент на том, что класс отвечает за доступ к данным пользователей.
-    '''
-    def GetUsers(self, telegram_id):
-        
-        pass
-    def GetOneUser(self, telegram_id):
-        '''
-        вернет все данные о пользователе
-        '''
-        user_info = Database().GetOne()
-    def GetFreeUsers(self, telegram_id) -> list:
-        pass 
-=======
-    def GetConnect(self):
-        return self.connect
-    
-    
-    def GetCursor(self):
-        return self.cursor
->>>>>>> ad50b678202f2727e19da7802412a6de0ae82d96
+

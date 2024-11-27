@@ -1,3 +1,4 @@
-from utils import Database
+from utils import SantaRepo
 
-Database().
+SantaRepo()
+SantaRepo().GetOneUser(telegram_id='123')
