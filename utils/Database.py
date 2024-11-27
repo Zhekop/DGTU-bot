@@ -5,7 +5,7 @@ from config import db_name
 class Database:
     # Singleton Init
     _instance = None
-    def __new__(cls, *args, **kwargs) -> None:
+    def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
@@ -134,9 +134,13 @@ class UserRepo():
     '''
     UserRepository — акцент на том, что класс отвечает за доступ к данным пользователей.
     '''
-    def GetUsers(self):
-        pass
-    def GetOneUser(self, ):
-        pass
-    def GetFreeUsers(self, ) -> list['tg_id']:
+    def GetUsers(self, telegram_id):
         
+        pass
+    def GetOneUser(self, telegram_id):
+        '''
+        вернет все данные о пользователе
+        '''
+        user_info = Database().GetOne()
+    def GetFreeUsers(self, telegram_id) -> list:
+        pass 

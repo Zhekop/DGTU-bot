@@ -21,5 +21,6 @@ async def santaCallback(call:CallbackQuery):
     
     if action == 'get':
         additional_action = data[2]
+        
         if additional_action == 'recipient':
             
