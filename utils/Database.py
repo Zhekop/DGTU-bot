@@ -12,12 +12,10 @@ class Database:
 
 
     def __init__(self) -> None:
-        if not hasattr(self, "_initialized"):
-            _db_name_ = db_name.replace('.db', '')
-            
-            self.connect = sqlite3.connect(f'{_db_name_}.db')
+        if not hasattr(self, "_initialized"):            
+            self.connect = sqlite3.connect(f'{db_name}.db')
             self.cursor = self.connect.cursor()
-            self.GenerateTable(table_name='Users', tg_id="INTEGER", name="STRING", name_recipient="STRING")
+            self.GenerateTable(table_name='Users', tg_id="INTEGER", name="STRING", santa="STRING")
 
 
     def GenerateTable(self, table_name, **kwargs) -> bool:
@@ -75,7 +73,6 @@ class Database:
             print('[sql AddRow]', e)
             return False
 
-
     def DeleteRow(self, param, value, table_name) -> bool:
         '''
         DELETE FROM {table_name} WHERE {param} = {value};
@@ -89,7 +86,6 @@ class Database:
         except Exception as e:
             print('[sql Delete]', e)
             return False
-
 
     def GetOne(self, data, table_name, find_param, find_value) -> str|bool:
         '''
@@ -111,7 +107,6 @@ class Database:
             print(f"[sql GetOne] {e}")
             return False
 
-
     def GetAll(self, data, table_name, find_param, find_value) -> str|bool:
         '''
         f'SELECT {data} FROM {table_name} WHERE {find_param} = {find_value}'
@@ -129,7 +124,13 @@ class Database:
             print(f"[sql GetAll] {e}")
             return False
 
+    def GetConnect(self):
+        return self.connect
 
+    def GetCursor(self):
+        return self.cursor
+
+<<<<<<< HEAD
 class UserRepo():
     '''
     UserRepository — акцент на том, что класс отвечает за доступ к данным пользователей.
@@ -144,3 +145,11 @@ class UserRepo():
         user_info = Database().GetOne()
     def GetFreeUsers(self, telegram_id) -> list:
         pass 
+=======
+    def GetConnect(self):
+        return self.connect
+    
+    
+    def GetCursor(self):
+        return self.cursor
+>>>>>>> ad50b678202f2727e19da7802412a6de0ae82d96
