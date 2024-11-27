@@ -5,19 +5,17 @@ from config import db_name
 class Database:
     # Singleton Init
     _instance = None
-    def __new__(cls, *args, **kwargs) -> None:
+    def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
 
     def __init__(self) -> None:
-        if not hasattr(self, "_initialized"):
-            _db_name_ = db_name.replace('.db', '')
-            
-            self.connect = sqlite3.connect(f'{_db_name_}.db')
+        if not hasattr(self, "_initialized"):            
+            self.connect = sqlite3.connect(f'{db_name}.db')
             self.cursor = self.connect.cursor()
-            self.GenerateTable(table_name='Users', tg_id="INTEGER", name="STRING", name_recipient="STRING")
+            self.GenerateTable(table_name='Users', tg_id="INTEGER", name="STRING", santa="STRING")
 
 
     def GenerateTable(self, table_name, **kwargs) -> bool:
@@ -130,13 +128,9 @@ class Database:
             return False
 
 
-class UserRepo():
-    '''
-    UserRepository — акцент на том, что класс отвечает за доступ к данным пользователей.
-    '''
-    def GetUsers(self):
-        pass
-    def GetOneUser(self, ):
-        pass
-    def GetFreeUsers(self, ) -> list['tg_id']:
-        
+    def GetConnect(self):
+        return self.connect
+    
+    
+    def GetCursor(self):
+        return self.cursor
