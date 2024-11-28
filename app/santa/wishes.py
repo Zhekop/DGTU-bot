@@ -42,6 +42,11 @@ async def recipientwish(call: CallbackQuery, state:FSMContext):
     if text:= check(chat_id=call.message.chat.id, user_id=call.from_user.id):
         await call.message.answer(text=text)
         return
+    
+    recipientwish_info = SantaRepo().GetRecipient(my_telegram_id=call.message.from_user.id)
+    wish_my_debil = recipientwish_info[1]
+
+    await call.message.answer(f'Пожелания моего дэбила: {wish_my_debil}')
 
 
 async def FSM_santa(message: Message, state: FSMContext):
