@@ -15,7 +15,7 @@ class Database:
         if not hasattr(self, "_initialized"):            
             self.connect = sqlite3.connect(f'{db_name}.db')
             self.cursor = self.connect.cursor()
-            self.GenerateTable(table_name='Users', tg_id="INTEGER", name="STRING", santa="STRING")
+            self.GenerateTable(table_name='Users', tg_id="INTEGER", name="STRING")
 
 
     def GenerateTable(self, table_name, **kwargs) -> bool:

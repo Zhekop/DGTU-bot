@@ -2,4 +2,8 @@
 from .handler import RouterSanta
 
 
-@RouterSanta.
+async def recipient()
+
+async def mywish()
+
+async def recipientwish()

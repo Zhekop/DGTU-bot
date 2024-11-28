@@ -17,7 +17,7 @@ class SantaRepo():
         if not hasattr(self, "_initialized"):            
             self.connect = Database().GetConnect()
             self.cursor = Database().GetCursor()
-            Database().GenerateTable(table_name='Users', tg_id="INTEGER", name="STRING", santa_recipient="STRING")
+            Database().GenerateTable(table_name="Santa", tg_id="INTEGER", name="STRING", santa_recipient="STRING", my_wish="STRING", photos_id="STRING")
 
 
     def GetUsers(self, telegram_id) -> list:
