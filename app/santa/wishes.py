@@ -2,7 +2,7 @@ from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from .handler import RouterSanta
-
+from aiogram.types import CallbackQuery
 
 async def recipient(call:CallbackQuery):
     await call.answer()
@@ -11,7 +11,11 @@ async def recipient(call:CallbackQuery):
         await call.message.answer(text='Пиши в лс дуралей')
         return
 
-async def mywish()
+async def mywish(call: CallbackQuery):
+    await call.answer()
+    await call.message.answer('Напишите ваши пожелания')
+
+
 
 async def recipientwish()
 
