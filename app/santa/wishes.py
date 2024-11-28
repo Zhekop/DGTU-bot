@@ -1,9 +1,29 @@
+from aiogram.types import CallbackQuery
+from aiogram.fsm.context import FSMContext
 
 from .handler import RouterSanta
 
 
-async def recipient()
+async def recipient(call:CallbackQuery):
+    await call.answer()
+    
+    if call.from_user.id != call.message.chat.id:
+        await call.message.answer(text='Пиши в лс дуралей')
+        return
 
 async def mywish()
 
 async def recipientwish()
+
+
+
+async def FSM_santa(state:FSMContext):
+    state
+
+
+async def check(chat_id, user_id):
+    '''
+    
+    '''
+    if chat_id == user_id:
+        return
