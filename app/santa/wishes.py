@@ -5,6 +5,8 @@ from .handler import RouterSanta
 
 from utils import SantaRepo
 
+from aiogram.types import CallbackQuery
+from utils.FSM import FSM_get
 
 async def recipient(call:CallbackQuery):
     '''
@@ -18,7 +20,8 @@ async def recipient(call:CallbackQuery):
 
     recipient_info = SantaRepo().GetRecipient()
 
-async def mywish(call: CallbackQuery, state):
+
+async def mywish(call: CallbackQuery, state: FSMContext):
     await call.answer()
     
     if text:= check(chat_id=call.message.chat.id, user_id=call.from_user.id):
@@ -27,6 +30,7 @@ async def mywish(call: CallbackQuery, state):
     
     await call.message.answer('Напишите ваши пожелания')
 
+    await state.set_state(FSM_get.GET_TEXT)
 
 async def recipientwish(call: CallbackQuery, state:FSMContext):
     await call.answer()
@@ -36,8 +40,9 @@ async def recipientwish(call: CallbackQuery, state:FSMContext):
         return
 
 
-async def FSM_santa(state:FSMContext):
-    state
+async def FSM_santa(message: Message, state: FSMContext):
+    await message.answer('Вы уверены в вашем пожелании?')
+    
 
 
 async def check(chat_id, user_id) -> str|bool:

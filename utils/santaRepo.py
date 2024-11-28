@@ -13,6 +13,7 @@ class SantaRepo():
             cls._instance = super().__new__(cls)
         return cls._instance
     
+
     def __init__(self) -> None:
         if not hasattr(self, "_initialized"):            
             self.connect = Database().GetConnect()
@@ -43,3 +44,8 @@ class SantaRepo():
         self.GetOneUser(telegram_id=my_telegram_id)
         
         
+        Database().GetAll(data='*', table_name='Users', find_param='santa', find_value=None)
+
+
+    def ClearSantaData(self) -> bool:
+        pass
