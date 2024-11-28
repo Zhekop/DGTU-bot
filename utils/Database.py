@@ -18,8 +18,6 @@ class Database:
 
 
     def __init__(self) -> None:
-        
-
         if not hasattr(self, "_initialized"):            
             self.connect = sqlite3.connect(f'{db_name}.db')
             self.cursor = self.connect.cursor()
@@ -100,6 +98,8 @@ class Database:
     def GetOne(self, data, table_name, find_param, find_value) -> str|bool:
         '''
         f'SELECT {data} FROM {table_name} WHERE {find_param} = {find_value}'
+        
+        - вернет первое найденное значение 
         '''
         try:
             query = f'SELECT {data} FROM {table_name} WHERE {find_param} = {find_value}'
@@ -111,16 +111,21 @@ class Database:
             if result == None:
                 return False
             
+            if data == '*':
+                return result
+            
             return result[0]
-
+        
         except sqlite3.Error as e:
             print(f"[sql GetOne] {e}")
             return False
 
 
-    def GetAll(self, data, table_name, find_param, find_value) -> str|bool:
+    def GetAll(self, data, table_name, find_param, find_value) -> list|bool:
         '''
         f'SELECT {data} FROM {table_name} WHERE {find_param} = {find_value}'
+        
+        - вернет список со всеми найденным значениями
         '''
         try:
             query = f'SELECT {data} FROM {table_name} WHERE {find_param} = {find_value}'

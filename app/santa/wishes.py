@@ -3,8 +3,8 @@ from aiogram.fsm.context import FSMContext
 
 from .handler import RouterSanta
 
-from utils import SantaRepo
-from utils.FSM import FSM_get
+from utils import SantaRepo, FSM_get
+
 
 async def recipient(call:CallbackQuery):
     '''
@@ -16,7 +16,8 @@ async def recipient(call:CallbackQuery):
         await call.message.answer(text=text)
         return
 
-    recipient_info = SantaRepo().GetRecipient()
+    recipient_info = SantaRepo().GetRecipient(my_telegram_id=call.message.from_user.id)
+    
 
 
 async def mywish(call: CallbackQuery, state: FSMContext):
