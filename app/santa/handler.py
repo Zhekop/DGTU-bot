@@ -3,9 +3,10 @@ from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 
 from utils import Database
-Routerhandler = Router()
 
-@Routerhandler.message(Command('santa'))
+RouterSanta = Router()
+
+@RouterSanta.message(Command('santa'))
 async def getSantaMenu(message:Message):
     inline_keyboard = [
         [InlineKeyboardButton(text='Получатель', callback_data='santa_get_recipient')]
@@ -13,7 +14,7 @@ async def getSantaMenu(message:Message):
 
 
 
-@Routerhandler.callback_query(F.data.startswith('santa'))
+@RouterSanta.callback_query(F.data.startswith('santa'))
 async def santaCallback(call:CallbackQuery):
     data = call.data.split('_')
     
