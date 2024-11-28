@@ -1,11 +1,9 @@
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, Message, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.context import FSMContext
 
 from .handler import RouterSanta
 
 from utils import SantaRepo
-
-from aiogram.types import CallbackQuery
 from utils.FSM import FSM_get
 
 async def recipient(call:CallbackQuery):
@@ -42,12 +40,23 @@ async def recipientwish(call: CallbackQuery, state:FSMContext):
 
 async def FSM_santa(message: Message, state: FSMContext):
     await state.update_data(wish=message.text)
-    await message.answer('Номер договора')
-    await state.set_state(FSM_get.GET_TEXT)
-
-
-async def FSM_sants_wish(message: Message, state: FSMContext):
+    inline_keyboard = [
+        [InlineKeyboardButton(text='Да', callback_data='santa_yes')],
+        [InlineKeyboardButton(text='Изменить', callback_data='santa_change')]
+    ]
     
+    keyboard = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+
+    await message.answer('Вы уверены в своём пожелании?', reply_markup=keyboard)
+    
+    await state.set_state(FSM_get.GET_ACCEPT)
+
+
+async def FSM_santa_wish(message: Message, state: FSMContext):
+    data = await state.get_data()
+    wish = data.get('wish')
+
+
 
 
 async def check(chat_id, user_id) -> str|bool:

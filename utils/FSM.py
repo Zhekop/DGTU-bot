@@ -3,6 +3,7 @@ from aiogram.fsm.state import StatesGroup, State
 
 class FSM_get(StatesGroup):
     GET_TEXT = State()
+    GET_ACCEPT = State()
     GET_PHOTO = State()
 
 
