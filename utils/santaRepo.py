@@ -21,23 +21,27 @@ class SantaRepo():
             Database().GenerateTable(table_name="Santa", tg_id="INTEGER", name="STRING", recipient_id="INTEGER DEFAULT  0", my_wish="STRING", photos_id="STRING")
 
 
+    def AddUser(self, telegram_id, name) -> bool:
+        return Database().AddRow(table_name='Santa', tg_id=telegram_id, name=name)
+        
+
     def GetUsers(self, telegram_id) -> list:
         '''
         
         '''
         pass
 
+
     def UpdateUserDataByUserID(self, update_param, new_value, user_id) -> bool:
         res = Database().Replace(table_name='Santa', row=update_param, new_value=new_value, find_param='tg_id', find_value=user_id)
         return res
     
     
-    def GetOneUser(self, telegram_id) -> list:
+    def GetOneUser(self, telegram_id) -> list|bool:
         '''
         вернет все данные о пользователе по tg_id
         '''
-        user_info = Database().GetOne(data='*', table_name='Santa', find_param='tg_id', find_value=telegram_id)
-        return user_info
+        return Database().GetOne(data='*', table_name='Santa', find_param='tg_id', find_value=telegram_id)
 
 
     def GetFreeUsers(self) -> list:
@@ -45,7 +49,9 @@ class SantaRepo():
 
 
     def GetRecipient(self, my_telegram_id:int|str) -> list|bool:
-        my_info = self.GetOneUser(telegram_id=my_telegram_id)
+        print(my_telegram_id)
+        my_info = self.GetOneUser(telegram_id=int(my_telegram_id))
+        
         recipient_tg_id = my_info[3]
         
         if recipient_tg_id:
@@ -54,6 +60,7 @@ class SantaRepo():
             return recipient_info
         
         return False
+
 
     def ClearSantaData(self) -> bool:
         pass

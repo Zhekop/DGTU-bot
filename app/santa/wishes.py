@@ -10,24 +10,30 @@ async def recipient(call:CallbackQuery):
     '''
     await call.answer()
     
-    if text:= check(chat_id=call.message.chat.id, user_id=call.from_user.id):
+    name = f'{call.message.from_user.full_name}'
+    if text:= check(chat_id=call.message.chat.id, user_id=call.from_user.id, name=name):
         await call.message.answer(text=text)
         return
 
-    recipient_info = SantaRepo().GetRecipient(my_telegram_id=call.message.from_user.id)
+    recipient_info = SantaRepo().GetRecipient(my_telegram_id=call.from_user.id)
+    
+    if not recipient_info:
+        # выдать ему получателя
+        return
     
     inline_keyboard = [
         [InlineKeyboardButton(text='Пожелания моего дэбила', callback_data='santa_get_recipientwish')]
     ]
-    keybaord = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+    keyboard = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
     
-    await call.message.answer(text=f'{recipient_info[2]}', reply_markup=keybaord)
+    await call.message.answer(text=f'{recipient_info[2]}', reply_markup=keyboard)
 
 
 async def mywish(call: CallbackQuery, state: FSMContext):
     await call.answer()
 
-    if text:= check(chat_id=call.message.chat.id, user_id=call.from_user.id):
+    name = f'{call.message.from_user.full_name}'
+    if text:= check(chat_id=call.message.chat.id, user_id=call.from_user.id, name=name):
         await call.message.answer(text=text)
         return
 
@@ -39,7 +45,8 @@ async def mywish(call: CallbackQuery, state: FSMContext):
 async def recipientwish(call: CallbackQuery, state:FSMContext):
     await call.answer()
     
-    if text:= check(chat_id=call.message.chat.id, user_id=call.from_user.id):
+    name = f'{call.message.from_user.full_name}'
+    if text:= check(chat_id=call.message.chat.id, user_id=call.from_user.id, name=name):
         await call.message.answer(text=text)
         return
     
@@ -91,10 +98,19 @@ async def change(call:CallbackQuery, state: FSMContext, additional_action:str):
         await call.message.answer('Напишите ваши пожелания:')
 
 
-async def check(chat_id, user_id) -> str|bool:
+def check(chat_id, user_id, name) -> str|bool:
     '''
     \n False - если все гуд
     _str_ - если есть ошибка
     '''
-    if chat_id == user_id:
-        return
+    
+    if not(SantaRepo().GetOneUser(telegram_id=user_id)):
+        if SantaRepo().AddUser(telegram_id=user_id, name=name):
+            print(f'[SantaRepo] User was added')        
+        
+    if chat_id != user_id:
+        return 'Не в этом чате' #проверить
+    
+    return False 
+
+

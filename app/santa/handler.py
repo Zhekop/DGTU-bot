@@ -6,13 +6,19 @@ from aiogram.fsm.context import FSMContext
 from utils import Database, SantaRepo
 from utils.FSM import SantaFSMGet, SantaFSMChange
 
-from .wishes import recipient, mywish, recipientwish, FSM_santa, update, change
+from .wishes import recipient, mywish, recipientwish, FSM_santa, update, change, check
 
 RouterSanta = Router()
 
 
 @RouterSanta.message(Command('santa'))
 async def getSantaMenu(message:Message):
+    
+    name = f'{message.from_user.full_name}'
+    if text:=check(chat_id=message.chat.id, user_id=message.from_user.id, name=name):
+        await message.answer(text=text)
+        return
+    
     inline_keyboard = [
         [InlineKeyboardButton(text='Получатель', callback_data='santa_get_recipient')],
         [InlineKeyboardButton(text='Мои пожелания', callback_data='santa_get_mywish')],

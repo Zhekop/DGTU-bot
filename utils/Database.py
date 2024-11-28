@@ -95,7 +95,7 @@ class Database:
             return False
 
 
-    def GetOne(self, data, table_name, find_param, find_value) -> str|bool:
+    def GetOne(self, data, table_name, find_param, find_value) -> list|bool:
         '''
         f'SELECT {data} FROM {table_name} WHERE {find_param} = {find_value}'
         
