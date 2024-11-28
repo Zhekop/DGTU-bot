@@ -13,11 +13,11 @@ class SantaRepo():
             cls._instance = super().__new__(cls)
         return cls._instance
     
+
     def __init__(self) -> None:
         if not hasattr(self, "_initialized"):            
             self.connect = Database().GetConnect()
             self.cursor = Database().GetCursor()
-            Database().GenerateTable(table_name='Users', tg_id="INTEGER", name="STRING", santa_recipient="STRING")
 
 
     def GetUsers(self, telegram_id) -> list:
@@ -36,4 +36,8 @@ class SantaRepo():
 
 
     def GetFreeUsers(self) -> list:
-        Database().GetAll(data='*', table_name='Users', find_param='')
+        Database().GetAll(data='*', table_name='Users', find_param='santa', find_value=None)
+
+
+    def ClearSantaData(self) -> bool:
+        pass
