@@ -1,10 +1,10 @@
 from aiogram import Router, F
-from aiogram.filters import Command
+from aiogram.filters import Command, StateFilter
 from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 
-from utils import Database
+from utils import Database, SantaRepo
 
-from .wishes import recipient, mywish, recipientwish
+from .wishes import recipient, mywish, recipientwish, FSM_santa
 
 RouterSanta = Router()
 
@@ -39,3 +39,9 @@ async def santaCallback(call: CallbackQuery):
         elif additional_action == 'recipientwish':
             await recipientwish()
 
+
+@RouterSanta.message(StateFilter(
+    
+))
+async def SantaFSM():
+    FSM_santa()

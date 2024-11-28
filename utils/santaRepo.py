@@ -37,3 +37,9 @@ class SantaRepo():
 
     def GetFreeUsers(self) -> list:
         Database().GetAll(data='*', table_name='Users', find_param='')
+
+
+    def GetRecipient(self, my_telegram_id:int|str) -> list:
+        self.GetOneUser(telegram_id=my_telegram_id)
+        
+        
