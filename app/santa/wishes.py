@@ -24,7 +24,12 @@ async def recipientwish()
 
 
 async def FSM_santa(message: Message, state: FSMContext):
-    await message.answer('Вы уверены в вашем пожелании?')
+    await state.update_data(wish=message.text)
+    await message.answer('Номер договора')
+    await state.set_state(FSM_get.GET_TEXT)
+
+
+async def FSM_sants_wish(message: Message, state: FSMContext):
     
 
 
