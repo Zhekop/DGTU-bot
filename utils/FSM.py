@@ -1,12 +1,11 @@
 from aiogram.fsm.state import StatesGroup, State
 
 
-class FSM_get(StatesGroup):
+class SantaFSMGet(StatesGroup):
     GET_TEXT = State()
-    GET_ACCEPT = State()
     GET_PHOTO = State()
 
 
-class FSM_change(StatesGroup):
+class SantaFSMChange(StatesGroup):
     CHANGE_TEXT = State()
     CHANGE_PHOTO = State()

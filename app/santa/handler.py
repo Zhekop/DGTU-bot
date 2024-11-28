@@ -1,11 +1,12 @@
 from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
 from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.fsm.context import FSMContext
 
 from utils import Database, SantaRepo
-from utils.FSM import FSM_get
+from utils.FSM import SantaFSMGet, SantaFSMChange
 
-from .wishes import recipient, mywish, recipientwish, FSM_santa, FSM_santa_wish
+from .wishes import recipient, mywish, recipientwish, FSM_santa, update, change
 
 RouterSanta = Router()
 
@@ -24,39 +25,36 @@ async def getSantaMenu(message:Message):
 
 
 @RouterSanta.callback_query(F.data.startswith('santa'))
-async def santaCallback(call: CallbackQuery):
+async def santaCallback(call: CallbackQuery, state: FSMContext):
     data = call.data.split('_') 
     action = data[1]
+    additional_action = data[2]
     
     if action == 'get':
-        additional_action = data[2]
         
         if additional_action == 'recipient':
             await recipient()
     
         elif additional_action == 'mywish':
-            await mywish()
+            await mywish(call, state)
         
         elif additional_action == 'recipientwish':
             await recipientwish()
 
-
-@RouterSanta.message(StateFilter(
-    FSM_get.GET_TEXT
-))
-async def SantaFSM():
-    FSM_santa()
-
-
-@RouterSanta.callback_query(F.data.startswith('santa'), StateFilter(
-        FSM_get.GET_ACCEPT
-))
-async def sants_wish_FSM(call: CallbackQuery):
-    data = call.data.split('_') 
-    action = data[1]
-    
-    if action == 'yes':
-        await FSM_santa_wish
-
+    elif action == 'update':
+        
+        if additional_action == 'mywish':
+            await update()
+            
     elif action == 'change':
-        await 
+        if additional_action == 'text':
+            await change()
+
+@RouterSanta.message(
+    StateFilter(
+        SantaFSMGet.GET_TEXT,
+        SantaFSMChange.CHANGE_TEXT
+    )
+)
+async def SantaFSM(message:Message, state:FSMContext):
+    FSM_santa(message, state)

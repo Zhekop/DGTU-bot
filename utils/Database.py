@@ -141,6 +141,28 @@ class Database:
             return False
 
 
+    def Replace(self, table_name, row, new_value, find_param, find_value):
+        '''
+        UPDATE "{table_name}" SET {row} = ? WHERE {find_param} = ?;\n
+        self.cursor.execute(command, (new_value, find_value))
+        '''
+        try:
+            command = f'''
+            UPDATE "{table_name}" 
+            SET {row} = ? 
+            WHERE {find_param} = ?;
+            '''
+            
+            self.cursor.execute(command, (new_value, find_value))
+
+            self.connect.commit()
+            return True
+        
+        except Exception as e:
+            print('[sql Replace]', e)
+            return False
+    
+    
     def GetConnect(self):
         return self.connect
 

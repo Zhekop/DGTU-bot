@@ -27,7 +27,11 @@ class SantaRepo():
         '''
         pass
 
-
+    def UpdateUserDataByUserID(self, update_param, new_value, user_id) -> bool:
+        res = Database().Replace(table_name='Santa', row=update_param, new_value=new_value, find_param='tg_id', find_value=user_id)
+        return res
+    
+    
     def GetOneUser(self, telegram_id) -> list:
         '''
         вернет все данные о пользователе по tg_id
