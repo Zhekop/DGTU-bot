@@ -3,6 +3,12 @@ from config import db_name
 
 
 class Database:
+    '''
+        \nUsers:
+        \n* tg_id _int_\n* name _str_\n* santa _int_ \n  * value: tg_id получателя | 0\n
+
+        \n
+    '''
     # Singleton Init
     _instance = None
     def __new__(cls, *args, **kwargs):
@@ -12,10 +18,12 @@ class Database:
 
 
     def __init__(self) -> None:
+        
+
         if not hasattr(self, "_initialized"):            
             self.connect = sqlite3.connect(f'{db_name}.db')
             self.cursor = self.connect.cursor()
-            self.GenerateTable(table_name='Users', tg_id="INTEGER", name="STRING")
+            self.GenerateTable(table_name='Users', tg_id="INTEGER", name="STRING", santa="INTEGER DEFAULT 0")
 
 
     def GenerateTable(self, table_name, **kwargs) -> bool:
