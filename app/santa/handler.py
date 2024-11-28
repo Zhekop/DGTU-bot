@@ -33,7 +33,7 @@ async def santaCallback(call: CallbackQuery, state: FSMContext):
     if action == 'get':
         
         if additional_action == 'recipient':
-            await recipient()
+            await recipient(call)
     
         elif additional_action == 'mywish':
             await mywish(call, state)

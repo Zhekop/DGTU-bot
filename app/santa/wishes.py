@@ -1,8 +1,6 @@
 from aiogram.types import CallbackQuery, Message, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.context import FSMContext
 
-from .handler import RouterSanta
-
 from utils import SantaRepo, SantaFSMGet, SantaFSMChange
 
 
@@ -18,6 +16,12 @@ async def recipient(call:CallbackQuery):
 
     recipient_info = SantaRepo().GetRecipient(my_telegram_id=call.message.from_user.id)
     
+    inline_keyboard = [
+        [InlineKeyboardButton(text='Пожелания моего дэбила', callback_data='santa_get_recipientwish')]
+    ]
+    keybaord = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+    
+    await call.message.answer(text=f'{recipient_info[2]}', reply_markup=keybaord)
 
 
 async def mywish(call: CallbackQuery, state: FSMContext):

@@ -49,7 +49,8 @@ class SantaRepo():
         recipient_tg_id = my_info[3]
         
         if recipient_tg_id:
-            recipient_info = Database().GetOne(data='*', table_name='Santa', find_param='recipient_id', find_value=recipient_tg_id)
+            recipient_info = self.GetOneUser(telegram_id=recipient_tg_id)
+            # recipient_info = Database().GetOne(data='*', table_name='Santa', find_param='recipient_id', find_value=recipient_tg_id)
             return recipient_info
         
         return False
