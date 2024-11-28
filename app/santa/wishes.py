@@ -104,7 +104,7 @@ def check(chat_id, user_id, name) -> str|bool:
     _str_ - если есть ошибка
     '''
     
-    if not(SantaRepo().GetOneUser(telegram_id=user_id)):
+    if not(SantaRepo().GetOneUserByTelegramId(telegram_id=user_id)):
         if SantaRepo().AddUser(telegram_id=user_id, name=name):
             print(f'[SantaRepo] User was added')        
         

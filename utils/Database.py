@@ -133,7 +133,7 @@ class Database:
             self.cursor.execute(query)
             results = self.cursor.fetchall()
             self.connect.commit()
-            
+
             return results
 
         except sqlite3.Error as e:

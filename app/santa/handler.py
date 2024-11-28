@@ -45,16 +45,17 @@ async def santaCallback(call: CallbackQuery, state: FSMContext):
             await mywish(call, state)
         
         elif additional_action == 'recipientwish':
-            await recipientwish()
+            await recipientwish(call, state)
 
     elif action == 'update':
         
         if additional_action == 'mywish':
-            await update()
+            await update(call, state, additional_action='mywish')
             
     elif action == 'change':
         if additional_action == 'text':
-            await change()
+            await change(call, state, additional_action='text')
+
 
 @RouterSanta.message(
     StateFilter(
@@ -63,4 +64,6 @@ async def santaCallback(call: CallbackQuery, state: FSMContext):
     )
 )
 async def SantaFSM(message:Message, state:FSMContext):
-    FSM_santa(message, state)
+    await FSM_santa(message, state)
+
+
