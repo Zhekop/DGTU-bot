@@ -1,5 +1,7 @@
-from utils import SantaRepo, Database
-import random
+from utils import SantaRepo
+from aiogram.types import CallbackQuery
+from aiogram.fsm.context import FSMContext
+import asyncio
 
 # # Database().AddRow(table_name="Santa", tg_id = '123', name='aboba')
 # SantaRepo().GetOneUser(telegram_id='123')
@@ -13,14 +15,15 @@ import random
 
 # SantaRepo().AddUser(telegram_id=123213213213123, name='Абоба', recipient_id=1016825585)
 
-# Я СДЕЛЯЛЬ
-recipient = SantaRepo().GetFreeUsers() # получаем список дэбилов
-recipient_user = random.choice(recipient) # выбираем одного из этих дэбилов
-
-f = 
-if recipient_user[1] == 
-
-SantaRepo().UpdateUserDataByUserID('recipient_id', recipient_user[1], 773446765)
-print(recipient_user[1])
 
 
+recipientwish_info = SantaRepo().GetRecipient(my_telegram_id=773446765)
+wish_my_debil = recipientwish_info[4]
+
+print(wish_my_debil)
+
+
+# recipientwish_info = SantaRepo().GetOneUserByTelegramId(telegram_id=773446765)
+# wish_my_debil = recipientwish_info[4]
+
+# print(wish_my_debil)
