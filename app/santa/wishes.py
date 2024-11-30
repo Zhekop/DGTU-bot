@@ -1,3 +1,5 @@
+import random
+
 from aiogram.types import CallbackQuery, Message, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.context import FSMContext
 
@@ -18,7 +20,19 @@ async def recipient(call:CallbackQuery):
     recipient_info = SantaRepo().GetRecipient(my_telegram_id=call.from_user.id)
     
     if not recipient_info:
-        # выдать ему получателя
+        recipients = SantaRepo().GetFreeUsers() # получаем список дэбилов
+        
+        if len(recipients) == 1:
+            if recipients[0][1] == call.from_user.id:
+                await call.message.answer('Анлаки')
+                return
+
+        recipient_user = random.choice(recipients) # выбираем одного из этих дэбилов
+
+        while recipient_user[1] == call.from_user.id:
+            recipient_user = random.choice(recipients) # выбираем одного из этих дэбилов
+
+        SantaRepo().UpdateUserDataByUserID(update_param='recipient_id', new_value=recipient_user[1], user_id=call.from_user.id)
         return
     
     inline_keyboard = [
@@ -26,7 +40,7 @@ async def recipient(call:CallbackQuery):
     ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
     
-    await call.message.answer(text=f'{recipient_info[2]}', reply_markup=keyboard)
+    await call.message.answer(text=f'Твой получатель: {recipient_info[2]}', reply_markup=keyboard)
 
 
 async def mywish(call: CallbackQuery, state: FSMContext):
@@ -51,7 +65,7 @@ async def recipientwish(call: CallbackQuery, state:FSMContext):
         return
     
     recipientwish_info = SantaRepo().GetRecipient(my_telegram_id=call.message.from_user.id)
-    wish_my_debil = recipientwish_info[1]
+    wish_my_debil = recipientwish_info[4]
 
     await call.message.answer(f'Пожелания моего дэбила: {wish_my_debil}')
 
@@ -80,12 +94,16 @@ async def update(call:CallbackQuery, state: FSMContext, additional_action:str):
     '''
     
     '''
+    await call.answer()
+
     if additional_action == 'mywish':
         data = await state.get_data()
         
         mywish_text = data.get(additional_action)
         
         SantaRepo().UpdateUserDataByUserID(update_param='my_wish', new_value=mywish_text, user_id=call.from_user.id)
+
+    await call.message.answer('Пожелание добавлено!')
 
 
 async def change(call:CallbackQuery, state: FSMContext, additional_action:str):

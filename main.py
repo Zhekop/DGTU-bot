@@ -14,7 +14,10 @@ async def main():
     await dp.start_polling(bot, skip_updates=True)
 
 
-if __name__ == '__main__':      
-    now_time = strftime("%H:%M")
-    print(f'Bot started at {now_time}')
-    asyncio.run(main()) 
+if __name__ == '__main__':
+    try:
+        now_time = strftime("%H:%M")
+        print(f'Bot started at {now_time}')
+        asyncio.run(main()) 
+    except KeyboardInterrupt:
+        pass
