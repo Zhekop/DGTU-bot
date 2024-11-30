@@ -2,3 +2,4 @@ __pycache__/
 
 config/service_account.json
 config/conf.py
+test.py
