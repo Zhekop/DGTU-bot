@@ -1,3 +1,5 @@
+import random
+
 from aiogram.types import CallbackQuery, Message, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.context import FSMContext
 
@@ -18,7 +20,19 @@ async def recipient(call:CallbackQuery):
     recipient_info = SantaRepo().GetRecipient(my_telegram_id=call.from_user.id)
     
     if not recipient_info:
-        # выдать ему получателя
+        recipients = SantaRepo().GetFreeUsers() # получаем список дэбилов
+        
+        if len(recipients) == 1:
+            if recipients[0][1] == call.from_user.id:
+                await call.message.answer('Анлаки')
+                return
+
+        recipient_user = random.choice(recipients) # выбираем одного из этих дэбилов
+
+        while recipient_user[1] == call.from_user.id:
+             recipient_user = random.choice(recipients) # выбираем одного из этих дэбилов
+
+        SantaRepo().UpdateUserDataByUserID(update_param='recipient_id', new_value=recipient_user[1], user_id=call.from_user.id)
         return
     
     inline_keyboard = [
