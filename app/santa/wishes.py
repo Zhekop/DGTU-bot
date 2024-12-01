@@ -64,7 +64,7 @@ async def recipientwish(call: CallbackQuery, state:FSMContext):
         await call.message.answer(text=text)
         return
     
-    recipientwish_info = SantaRepo().GetRecipient(my_telegram_id=call.message.from_user.id)
+    recipientwish_info = SantaRepo().GetRecipient(my_telegram_id=call.from_user.id)
     wish_my_debil = recipientwish_info[4]
 
     await call.message.answer(f'Пожелания моего дэбила: {wish_my_debil}')
