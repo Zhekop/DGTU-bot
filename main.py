@@ -2,6 +2,7 @@ import asyncio
 from time import strftime 
 from config import bot, dp
 import app
+from utils import set_command
 
 
 async def main():
@@ -9,7 +10,7 @@ async def main():
         app.RouterMain
     )
 
-    # await set_command(bot)
+    await set_command(bot)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot, skip_updates=True)
 

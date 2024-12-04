@@ -3,10 +3,10 @@ from aiogram.filters import Command, StateFilter
 from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.fsm.context import FSMContext
 
-from utils import Database, SantaRepo
+from utils import Database, SantaRepo, keyboard_main_menu
 from utils.FSM import SantaFSMGet, SantaFSMChange
 
-from .wishes import recipient, mywish, recipientwish, FSM_santa, update, change, check
+from .wishes import backToMenu, recipient, mywish, recipientwish, FSM_santa, update, change, setFsm, check
 
 RouterSanta = Router()
 
@@ -18,26 +18,22 @@ async def getSantaMenu(message:Message):
     if text:=check(chat_id=message.chat.id, user_id=message.from_user.id, name=name):
         await message.answer(text=text)
         return
-    
-    inline_keyboard = [
-        [InlineKeyboardButton(text='Получатель', callback_data='santa_get_recipient')],
-        [InlineKeyboardButton(text='Мои пожелания', callback_data='santa_get_mywish')],
-        [InlineKeyboardButton(text='Пожелания моего дэбила', callback_data='santa_get_recipientwish')]
-    ]
-    
-    keybaord = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
-    await message.answer(text='Выбери действие', reply_markup=keybaord)
+    await message.answer(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboard_main_menu)
 
 
 @RouterSanta.callback_query(F.data.startswith('santa'))
 async def santaCallback(call: CallbackQuery, state: FSMContext):
     data = call.data.split('_') 
     action = data[1]
+
+    if action == 'backtomenu':
+        await backToMenu(call)
+        return
+
     additional_action = data[2]
     
     if action == 'get':
-        
         if additional_action == 'recipient':
             await recipient(call)
     
@@ -45,16 +41,16 @@ async def santaCallback(call: CallbackQuery, state: FSMContext):
             await mywish(call, state)
         
         elif additional_action == 'recipientwish':
-            await recipientwish(call, state)
+            await recipientwish(call)
 
     elif action == 'update':
-        
-        if additional_action == 'mywish':
-            await update(call, state, additional_action='mywish')
+        await update(call, state, additional_action=additional_action)
             
     elif action == 'change':
-        if additional_action == 'text':
-            await change(call, state, additional_action='text')
+        await change(call, state, additional_action=additional_action)
+    
+    elif action == 'setfsm':
+        await setFsm(call, state, additional_action)
 
 
 @RouterSanta.message(

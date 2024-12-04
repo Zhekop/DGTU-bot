@@ -3,7 +3,7 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
 import asyncio
 
-
+from utils import Database
 # # Database().AddRow(table_name="Santa", tg_id = '123', name='aboba')
 # SantaRepo().GetOneUser(telegram_id='123')
 
@@ -26,3 +26,4 @@ print(wish_my_debil)
 # wish_my_debil = recipientwish_info[4]
 
 # print(wish_my_debil)
+

@@ -18,7 +18,7 @@ class SantaRepo():
         if not hasattr(self, "_initialized"):            
             self.connect = Database().GetConnect()
             self.cursor = Database().GetCursor()
-            Database().GenerateTable(table_name="Santa", tg_id="INTEGER", name="STRING", recipient_id="INTEGER DEFAULT  0", my_wish="STRING", photos_id="STRING")
+            Database().GenerateTable(table_name="Santa", tg_id="INTEGER", name="STRING", recipient_id="INTEGER DEFAULT 0", can_rerol = "INT DEFAULT 2", my_wish="STRING", photos_id="STRING")
 
 
     def AddUser(self, telegram_id, name, recipient_id=0) -> bool:
