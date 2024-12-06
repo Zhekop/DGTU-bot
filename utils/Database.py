@@ -171,3 +171,17 @@ class Database:
         return self.cursor
 
 
+    def Count(self, table_name)-> int|bool: 
+        '''
+        кол-во строк в таблице Santa
+        '''
+        try:
+            command = f'SELECT COUNT(*) FROM "{table_name}"'
+            self.cursor.execute(command)
+
+            self.connect.commit()
+            return int(self.cursor.fetchone()[0])
+        
+        except Exception as e:
+            print('[sql Count]', e)
+            return False

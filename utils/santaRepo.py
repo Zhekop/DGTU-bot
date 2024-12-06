@@ -52,7 +52,7 @@ class SantaRepo():
 
 
     def GetFreeUsers(self) -> list:
-        all_users = self.Count(table_name='Santa')
+        all_users = self.Count()
         
         # user_wishout_recipient_id = Database().GetAll(data='tg_id', table_name='Santa', find_param='recipient_id', find_value=0)
         # len_user_wishout_recipient = len(user_wishout_recipient_id) #юзеры которые ничего не получают (кол-во)
@@ -87,20 +87,19 @@ class SantaRepo():
 
 
     def ClearSantaData(self) -> bool:
-        pass
-    
-    
-    def Count(self, table_name)-> int: 
-        '''
-        кол-во строк в таблице
-        '''
+        all_users = self.Count()
         try:
-            command = f'SELECT COUNT(*) FROM "{table_name}"'
-            self.cursor.execute(command)
-
-            self.connect.commit()
-            return int(self.cursor.fetchone()[0])
-        
-        except Exception as e:
-            print('[sql Count]', e)
+            for i in range(1, all_users+1):
+                Database().DeleteRow(table_name="Santa", param='id', value=i)
+            else:
+                return True
+        except:
             return False
+    
+    def Count(self)-> int|bool: 
+        '''
+        кол-во строк в таблице Santa
+        '''
+        return Database().Count(table_name='Santa')
+    
+    

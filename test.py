@@ -16,10 +16,10 @@ from utils import Database
 
 # SantaRepo().AddUser(telegram_id=123213213213123, name='Абоба', recipient_id=1016825585)
 
-recipientwish_info = SantaRepo().GetRecipient(my_telegram_id=773446765)
-wish_my_debil = recipientwish_info[4]
+# recipientwish_info = SantaRepo().GetRecipient(my_telegram_id=773446765)
+# wish_my_debil = recipientwish_info[4]
 
-print(wish_my_debil)
+# print(wish_my_debil)
 
 
 # recipientwish_info = SantaRepo().GetOneUserByTelegramId(telegram_id=773446765)
@@ -27,3 +27,4 @@ print(wish_my_debil)
 
 # print(wish_my_debil)
 
+print(SantaRepo().ClearSantaData())
