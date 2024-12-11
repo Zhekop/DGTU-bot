@@ -3,7 +3,7 @@ from config import db_name
 from .database import Database
 
 
-class SantaRepo():
+class SantaRepo:
     '''
     SantaRepository — акцент на том, что класс отвечает за полноцнный дотуп к функционалу для санты
     '''
