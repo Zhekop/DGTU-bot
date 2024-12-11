@@ -1,1 +1,1 @@
-from .handler import RouterSanta
+from .main_handlers import RouterSanta

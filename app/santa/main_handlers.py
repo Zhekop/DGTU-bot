@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from utils import Database, SantaRepo, keyboard_main_menu
 from utils.FSM import SantaFSMGet, SantaFSMChange
 
-from .wishes import backToMenu, recipient, mywish, recipientwish, FSM_santa, update, change, setFsm, check
+from .handlers import backToMenu, recipient, mywish, recipientwish, FSM_santa, update, change, setFsm, check
 
 RouterSanta = Router()
 
