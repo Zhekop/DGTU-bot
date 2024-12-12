@@ -16,10 +16,17 @@ keyboard_back_to_menu = InlineKeyboardMarkup(inline_keyboard=inline_keyboard_bac
 
 recipient_inline_keyboard = [
     [InlineKeyboardButton(text='Пожелания моего получателя', callback_data='santa_get_recipientwish')],
+    [InlineKeyboardButton(text='Изменить получателя', callback_data='santa_res_change')],
     inline_keyboard_back_to_menu[0] # кнопка "назад в меню"
 ]
 recipient_keyboard = InlineKeyboardMarkup(inline_keyboard=recipient_inline_keyboard)
 
+change_recipient_inline_keyboard = [
+    [InlineKeyboardButton(text='Да, меняем', callback_data='santa_reschange_confrim')],
+    [InlineKeyboardButton(text='Нет, оставим', callback_data='santa_get_recipient')],
+    inline_keyboard_back_to_menu[0] # кнопка "назад в меню"
+]
+change_recipient_keyboard = InlineKeyboardMarkup(inline_keyboard=change_recipient_inline_keyboard)
 
 mywish_inline_keybaord = [
         [InlineKeyboardButton(text='Изменить пожелание', callback_data='santa_setfsm_changemywishtext')],

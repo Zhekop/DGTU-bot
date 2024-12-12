@@ -3,7 +3,7 @@ import random
 from aiogram.types import CallbackQuery, Message, InlineKeyboardMarkup, InlineKeyboardButton, InputMediaPhoto
 from aiogram.fsm.context import FSMContext
 
-from utils import SantaRepo, SantaFSMGet, SantaFSMChange, keyboard_main_menu, recipient_keyboard, mywish_keybaord, keyboard_back_to_menu
+from utils import SantaRepo, SantaFSMGet, SantaFSMChange, keyboard_main_menu, recipient_keyboard, mywish_keybaord, keyboard_back_to_menu, change_recipient_keyboard
 from config import bot
 from asyncio import sleep
 
@@ -39,6 +39,40 @@ async def recipient(call:CallbackQuery):
         recipient_info = SantaRepo().GetRecipient(my_telegram_id=call.from_user.id)
     
     await call.message.edit_text(text=f'Твой получатель: {recipient_info[2]}', reply_markup=recipient_keyboard)
+
+
+async def change_recipient(call: CallbackQuery, additional_action:str):
+    '''
+    смена получателя
+    '''
+    await call.answer()
+
+    if additional_action == 'change':
+        can_rerol = SantaRepo().GetOneUserByTelegramId(telegram_id=call.from_user.id)
+        how_many = can_rerol[4]
+
+        if how_many == 0:
+            await call.message.edit_text('Больше нельзя менять получателя')
+            await nice_sleep(time=3, text='Главное меню вернется через ', message=call.message, is_del=False)
+            await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboard_main_menu)
+
+        else: 
+            await call.message.edit_text(text=f'❗️ВНИМАНИЕ❗️\nТы можешь поменять получателя ещё {how_many} раз(а)\nТочно меняем?',
+                                    reply_markup=change_recipient_keyboard)
+        
+
+async def confirmed_change_recipient(call: CallbackQuery, additional_action:str):
+    '''
+    удаляем действующего получателя
+    '''
+
+    if additional_action == 'confrim':
+        can_rerol = SantaRepo().GetOneUserByTelegramId(telegram_id=call.from_user.id)
+        how_many = can_rerol[4]
+        SantaRepo().UpdateUserDataByUserID(update_param='can_rerol', new_value=how_many-1, user_id=call.from_user.id)
+
+        SantaRepo().UpdateUserDataByUserID(update_param='recipient_id', new_value=None, user_id=call.from_user.id)
+        await recipient(call)
 
 
 async def mywish(call: CallbackQuery, state: FSMContext):
@@ -95,7 +129,7 @@ async def recipientwish(call: CallbackQuery):
     medias = recipientwish_info[6]
 
     if wish_my_recipient == None:
-        answer_text = 'У вашего получателя нет пожеланий.\nОтправить ему просьюу добавить пожелание?'
+        answer_text = 'У вашего получателя нет пожеланий.\nОтправить ему просьбу добавить пожелание?'
     else:
         answer_text = f'Пожелания моего дэбила: {wish_my_recipient}'
 
