@@ -1,6 +1,6 @@
 import sqlite3
 from config import db_name
-from .database import Database
+from .Database import Database
 
 
 class SantaRepo:
