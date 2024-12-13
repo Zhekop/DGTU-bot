@@ -3,7 +3,7 @@ import random
 from aiogram.types import CallbackQuery, Message, InlineKeyboardMarkup, InlineKeyboardButton, InputMediaPhoto
 from aiogram.fsm.context import FSMContext
 
-from utils import SantaRepo, SantaFSMGet, SantaFSMChange, keyboard_main_menu, recipient_keyboard, mywish_keybaord, keyboard_back_to_menu
+from utils import SantaRepo, SantaFSMGet, SantaFSMChange, keyboards
 from config import bot
 from asyncio import sleep
 
@@ -27,7 +27,7 @@ async def recipient(call:CallbackQuery):
             if recipients[0][1] == call.from_user.id:
                 await call.message.edit_text('Для тебя не хватает пары(\nАнлаки')
                 await nice_sleep(time=3, text='Главное меню вернется через ', message=call.message, is_del=False)
-                await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboard_main_menu)
+                await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboards.keyboards.keyboard_main_menu)
                 return
 
         recipient_user = random.choice(recipients) # выбираем одного из доступных получателей
@@ -38,7 +38,7 @@ async def recipient(call:CallbackQuery):
         SantaRepo().UpdateUserDataByUserID(update_param='recipient_id', new_value=recipient_user[1], user_id=call.from_user.id)
         recipient_info = SantaRepo().GetRecipient(my_telegram_id=call.from_user.id)
     
-    await call.message.edit_text(text=f'Твой получатель: {recipient_info[2]}', reply_markup=recipient_keyboard)
+    await call.message.edit_text(text=f'Твой получатель: {recipient_info[2]}', reply_markup=keyboards.recipient_keyboard)
 
 
 async def mywish(call: CallbackQuery, state: FSMContext):
@@ -64,7 +64,7 @@ async def mywish(call: CallbackQuery, state: FSMContext):
     medias = my_info[6]
 
     if medias == None:
-        await call.message.edit_text(text=answer_text, reply_markup=mywish_keybaord)
+        await call.message.edit_text(text=answer_text, reply_markup=keyboards.mywish_keybaord)
         return 
     
     media = []
@@ -73,7 +73,7 @@ async def mywish(call: CallbackQuery, state: FSMContext):
             media.append(InputMediaPhoto(media=i, caption=answer_text))
         media.append(InputMediaPhoto(media=i))
     else:  
-        await call.message.edit_media(media=media, reply_markup=mywish_keybaord)
+        await call.message.edit_media(media=media, reply_markup=keyboards.mywish_keybaord)
 
 
 async def recipientwish(call: CallbackQuery):
@@ -88,7 +88,7 @@ async def recipientwish(call: CallbackQuery):
     if not recipientwish_info:
         await call.message.edit_text(text='У вас нет получателя')
         await nice_sleep(time=3, text='Главное меню вернется через ', message=call.message, is_del=False)
-        await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboard_main_menu)
+        await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboards.keyboard_main_menu)
         return
 
     wish_my_recipient = recipientwish_info[5]
@@ -96,11 +96,13 @@ async def recipientwish(call: CallbackQuery):
 
     if wish_my_recipient == None:
         answer_text = 'У вашего получателя нет пожеланий.\nОтправить ему просьюу добавить пожелание?'
-    else:
-        answer_text = f'Пожелания моего дэбила: {wish_my_recipient}'
+        await call.message.answer(text=answer_text, reply_markup=keyboards.recipientwish_keyboard)
+        return
+    
+    answer_text = f'Пожелания моего получателя: {wish_my_recipient}'
 
     if medias == None:
-        await call.message.edit_text(answer_text, reply_markup=keyboard_back_to_menu)
+        await call.message.edit_text(answer_text, reply_markup=keyboards.keyboard_back_to_menu)
         return
     
     media = []
@@ -108,9 +110,9 @@ async def recipientwish(call: CallbackQuery):
         if media == []:
             media.append(InputMediaPhoto(media=i, caption=answer_text))
         media.append(InputMediaPhoto(media=i))
-        
+
     else:
-        await call.message.edit_media(media=media, reply_markup=mywish_keybaord)
+        await call.message.edit_media(media=media, reply_markup=keyboards.mywish_keybaord)
 
 
 async def FSM_santa(message: Message, state: FSMContext):
@@ -150,7 +152,7 @@ async def update(call:CallbackQuery, state: FSMContext, additional_action:str):
 
     await call.message.edit_text('Пожелание добавлено!')
     await nice_sleep(time=3, text='Главное меню вернется через ', message=call.message, is_del=False)
-    await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboard_main_menu)
+    await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboards.keyboard_main_menu)
 
 
 async def change(call:CallbackQuery, state:FSMContext, additional_action:str):
@@ -168,19 +170,28 @@ async def change(call:CallbackQuery, state:FSMContext, additional_action:str):
 async def setFsm(call:CallbackQuery, state:FSMContext, additional_action:str):
     if additional_action == 'changemywishtext':
         await state.set_state(SantaFSMGet.GET_TEXT)
-        await call.message.answer(text='Введите новое пожелание')
+        await state.update_data(data={'message_id':call.message.message_id})
+        await call.message.edit_text(text='Введите новое пожелание')
 
     elif additional_action == 'changemywishphoto':
         await state.set_state(SantaFSMGet.GET_PHOTO)
-        await call.message.answer(text='Введите новые картинки')
+        await state.update_data(data={'message_id':call.message.message_id})
+        await call.message.edit_text(text='Введите новые картинки')
 
     # elif additional_action == '':
 
     # elif additional_action == '':
 
 
-async def backToMenu(call:CallbackQuery):
-    await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboard_main_menu)
+async def backToMenu(call: CallbackQuery):
+    await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboards.keyboard_main_menu)
+
+
+async def request(call: CallbackQuery, addidional_action: str):
+    if addidional_action == 'recipientwish':
+        user_info = SantaRepo().GetRecipient(my_telegram_id=call.message.from_user)
+        chat_id = user_info[1]
+        await call.bot.send_message(chat_id=chat_id, text='[SANTA] Заполни сво(Ё) желания')
 
 
 def check(chat_id, user_id, name) -> str|bool:
@@ -199,7 +210,7 @@ def check(chat_id, user_id, name) -> str|bool:
     return False 
 
 
-async def nice_sleep(time:int, text:str, message:Message, is_del:bool = True):
+async def nice_sleep(time: int, text: str, message: Message, is_del: bool = True):
 
     digits_with_emojis = (
     (0, "0️⃣"),  # Ноль

@@ -27,3 +27,10 @@ mywish_inline_keybaord = [
         inline_keyboard_back_to_menu[0] # кнопка "назад в меню"
     ]
 mywish_keybaord = InlineKeyboardMarkup(inline_keyboard=mywish_inline_keybaord)
+
+
+recipientwish_inline_keyboard = [
+    [InlineKeyboardButton(text='Попросить заполнить пожелание', callback_data='snata_request_recipientwish')],
+    inline_keyboard_back_to_menu[0] # кнопка "назад в меню"
+]
+recipientwish_keyboard = InlineKeyboardMarkup(inline_keyboard=recipientwish_inline_keyboard)

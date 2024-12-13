@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from utils import Database, SantaRepo, keyboard_main_menu
 from utils.FSM import SantaFSMGet, SantaFSMChange
 
-from .handlers import backToMenu, recipient, mywish, recipientwish, FSM_santa, update, change, setFsm, check
+from .handlers import backToMenu, recipient, mywish, recipientwish, FSM_santa, update, change, setFsm, check, request
 
 RouterSanta = Router()
 
@@ -51,6 +51,9 @@ async def santaCallback(call: CallbackQuery, state: FSMContext):
     
     elif action == 'setfsm':
         await setFsm(call, state, additional_action)
+    
+    elif action == 'request':
+        await request(call, additional_action)
 
 
 @RouterSanta.message(
