@@ -54,11 +54,11 @@ async def change_recipient(call: CallbackQuery, additional_action:str):
         if how_many == 0:
             await call.message.edit_text('Больше нельзя менять получателя')
             await nice_sleep(time=3, text='Главное меню вернется через ', message=call.message, is_del=False)
-            await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboard_main_menu)
+            await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboards.keyboard_main_menu)
 
         else: 
             await call.message.edit_text(text=f'❗️ВНИМАНИЕ❗️\nТы можешь поменять получателя ещё {how_many} раз(а)\nТочно меняем?',
-                                    reply_markup=change_recipient_keyboard)
+                                    reply_markup=keyboards.change_recipient_keyboard)
         
 
 async def confirmed_change_recipient(call: CallbackQuery, additional_action:str):
@@ -154,7 +154,8 @@ async def FSM_santa(message: Message, state: FSMContext):
 
     '''
     now_state = await state.get_state()
-
+    print(1)
+    print(now_state==SantaFSMGet.GET_PHOTO)
     if now_state == SantaFSMGet.GET_TEXT or now_state == SantaFSMChange.CHANGE_TEXT:
         
         await state.update_data(data={"mywish": message.text})
@@ -169,6 +170,21 @@ async def FSM_santa(message: Message, state: FSMContext):
         
         await bot.delete_message(chat_id=message.chat.id, message_id=message_id)
         await message.answer(text=f'Ваше пожелание:\n{message.text}\nВы уверены в своём пожелании?', reply_markup=keyboard)
+    
+    elif now_state == SantaFSMGet.GET_PHOTO or now_state == SantaFSMChange.CHANGE_PHOTO:
+        
+        await state.update_data(data={"photosid": message.photo[-1].file_id})
+        message_id = await state.get_value(key="message_id")
+
+        inline_keyboard = [
+            [InlineKeyboardButton(text='Да', callback_data='santa_update_photosid')],
+            [InlineKeyboardButton(text='Изменить', callback_data='santa_change_photosid')]
+        ]
+
+        keyboard = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+        print(message.photo[-1].file_id)
+        # await bot.delete_message(chat_id=message.chat.id, message_id=message_id)
+        # await message.answer_photo(photo=message.photo[-1].file_id, caption=f'Ваше фото:\nВы уверены в своем выборе?', reply_markup=keyboard)
 
 
 async def update(call:CallbackQuery, state: FSMContext, additional_action:str):
@@ -183,6 +199,14 @@ async def update(call:CallbackQuery, state: FSMContext, additional_action:str):
         mywish_text = data.get(additional_action)
         
         SantaRepo().UpdateUserDataByUserID(update_param='my_wish', new_value=mywish_text, user_id=call.from_user.id)
+
+    elif additional_action == 'photosid':
+        data = await state.get_data()
+        
+        photos_id = data.get(additional_action)
+        
+        SantaRepo().UpdateUserDataByUserID(update_param='photos_id', new_value=photos_id, user_id=call.from_user.id)
+
 
     await call.message.edit_text('Пожелание добавлено!')
     await nice_sleep(time=3, text='Главное меню вернется через ', message=call.message, is_del=False)

@@ -5,7 +5,8 @@ import asyncio
 
 from utils import Database
 # # Database().AddRow(table_name="Santa", tg_id = '123', name='aboba')
-# SantaRepo().GetOneUser(telegram_id='123')
+# SantaRepo().GetOneUser(te
+# legram_id='123')
 
 # print(Database().GetAll(data='*', table_name='Santa', find_param='tg_id', find_value=123), 222)
 # print(Database().GetAll(data='id', table_name='Santa', find_param='tg_id', find_value=123), 222)
@@ -27,4 +28,6 @@ from utils import Database
 
 # print(wish_my_debil)
 
-print(SantaRepo().ClearSantaData())
+# print(SantaRepo().ClearSantaData())
+# print(Database().Replace(table_name='Santa', row='recipient_id', new_value=0, find_param='id', find_value=2))
+
