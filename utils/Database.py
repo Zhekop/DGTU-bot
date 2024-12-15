@@ -141,7 +141,7 @@ class Database:
             return False
 
 
-    def Replace(self, table_name, row, new_value, find_param, find_value):
+    def Update(self, table_name, row, new_value, find_param, find_value):
         '''
         UPDATE "{table_name}" SET {row} = ? WHERE {find_param} = ?;\n
         self.cursor.execute(command, (new_value, find_value))
@@ -171,7 +171,7 @@ class Database:
         return self.cursor
 
 
-    def Count(self, table_name)-> int|bool: 
+    def RowCount(self, table_name)-> int|bool: 
         '''
         кол-во строк в таблице Santa
         '''

@@ -22,19 +22,24 @@ class SantaRepo:
 
 
     def AddUser(self, telegram_id, name, recipient_id=0) -> bool:
+        '''
+        Добавляет пользователя
+        '''
         return Database().AddRow(table_name='Santa', tg_id=telegram_id, name=name, recipient_id=recipient_id)
         
 
     def GetUsers(self, find_param, find_value) -> list[tuple]:
         '''
-        
+        Возвращает всех пользователей по искомому параметру
         '''
         return Database().GetAll(data='*', table_name='Santa', find_param=find_param, find_value=find_value)
 
 
-    def UpdateUserDataByUserID(self, update_param, new_value, user_id) -> bool:
-        res = Database().Replace(table_name='Santa', row=update_param, new_value=new_value, find_param='tg_id', find_value=user_id)
-        return res
+    def UpdateUserDataByTelegramID(self, update_param, new_value, user_id) -> bool:
+        '''
+        Обновляет параметр у пользователя по Telegram ID
+        '''
+        return Database().Update(table_name='Santa', row=update_param, new_value=new_value, find_param='tg_id', find_value=user_id)
     
     
     def GetOneUserByTelegramId(self, telegram_id) -> list|bool:
@@ -46,12 +51,16 @@ class SantaRepo:
 
     def GetOneUserById(self, idd) -> list|bool:
         '''
-        вернет все данные о пользователе по idd
+        вернет все данные о пользователе по его ID (idd)
         '''
         return Database().GetOne(data='*', table_name='Santa', find_param='id', find_value=idd)
 
 
-    def GetFreeUsers(self) -> list:
+    def GetFreeUsers(self) -> list|bool:
+        '''
+    \n Вернет всех "свободных" пользователей
+    \n Тех у кого нет санты
+        '''
         all_users = self.Count()
         
         # user_wishout_recipient_id = Database().GetAll(data='tg_id', table_name='Santa', find_param='recipient_id', find_value=0)
@@ -61,8 +70,11 @@ class SantaRepo:
         
         for i in range(1, all_users+1):
 
-            user_tg_id = self.GetOneUserById(idd=i)[1]
-            user = self.GetUsers(find_param='recipient_id', find_value=user_tg_id)
+            try:
+                user_tg_id = self.GetOneUserById(idd=i)[1]
+                user = self.GetUsers(find_param='recipient_id', find_value=user_tg_id)
+            except:
+                return False
             
             if user != []:
                 continue
@@ -74,19 +86,24 @@ class SantaRepo:
         
 
     def GetRecipient(self, my_telegram_id:int|str) -> list|bool:
+        '''
+        \n Возвращает данные получателя, по Telegram ID его санты
+        \n Если у Санты нет получателя, вернется False
+        '''
         my_info = self.GetOneUserByTelegramId(telegram_id=int(my_telegram_id))
-        
         recipient_tg_id = my_info[3]
         
         if recipient_tg_id:
             recipient_info = self.GetOneUserByTelegramId(telegram_id=recipient_tg_id)
-            # recipient_info = Database().GetOne(data='*', table_name='Santa', find_param='recipient_id', find_value=recipient_tg_id)
             return recipient_info
         
         return False
 
 
     def ClearSantaData(self) -> bool:
+        '''
+        Очищается таблица Users ПОЛНОСТЬЮ
+        '''
         all_users = self.Count()
         try:
             for i in range(1, all_users+1):
@@ -96,10 +113,10 @@ class SantaRepo:
         except:
             return False
     
-    def Count(self)-> int|bool: 
+    def RowCount(self)-> int|bool: 
         '''
         кол-во строк в таблице Santa
         '''
-        return Database().Count(table_name='Santa')
+        return Database().RowCount(table_name='Santa')
     
     

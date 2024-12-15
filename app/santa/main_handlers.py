@@ -27,7 +27,7 @@ async def getSantaMenu(message:Message):
 async def santaCallback(call: CallbackQuery, state: FSMContext):
     data = call.data.split('_') 
     action = data[1]
-
+    print(action)
     if action == 'backtomenu':
         await backToMenu(call)
         return
@@ -67,7 +67,9 @@ async def santaCallback(call: CallbackQuery, state: FSMContext):
 @RouterSanta.message(
     StateFilter(
         SantaFSMGet.GET_TEXT,
-        SantaFSMChange.CHANGE_TEXT
+        SantaFSMChange.CHANGE_TEXT,
+        SantaFSMGet.GET_PHOTO,
+        SantaFSMChange.CHANGE_PHOTO,
     )
 )
 async def SantaFSM(message:Message, state:FSMContext):

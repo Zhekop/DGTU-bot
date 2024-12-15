@@ -31,3 +31,6 @@ from utils import Database
 # print(SantaRepo().ClearSantaData())
 # print(Database().Replace(table_name='Santa', row='recipient_id', new_value=0, find_param='id', find_value=2))
 
+a = Database().GetOne(data='*', table_name='Santa', find_param='tg_id', find_value="1110727891")
+a = SantaRepo().GetRecipient(data='*', table_name='Santa', find_param='tg_id', find_value="1110727891")
+print(a)

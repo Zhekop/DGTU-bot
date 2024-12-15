@@ -27,7 +27,7 @@ async def recipient(call:CallbackQuery):
             if recipients[0][1] == call.from_user.id:
                 await call.message.edit_text('Для тебя не хватает пары(\nАнлаки')
                 await nice_sleep(time=3, text='Главное меню вернется через ', message=call.message, is_del=False)
-                await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboards.keyboards.keyboard_main_menu)
+                await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboards.keyboard_main_menu)
                 return
 
         recipient_user = random.choice(recipients) # выбираем одного из доступных получателей
@@ -35,7 +35,7 @@ async def recipient(call:CallbackQuery):
         while recipient_user[1] == call.from_user.id:
             recipient_user = random.choice(recipients) # повторяем если тебе выпал ты сам
 
-        SantaRepo().UpdateUserDataByUserID(update_param='recipient_id', new_value=recipient_user[1], user_id=call.from_user.id)
+        SantaRepo().UpdateUserDataByTelegramID(update_param='recipient_id', new_value=recipient_user[1], user_id=call.from_user.id)
         recipient_info = SantaRepo().GetRecipient(my_telegram_id=call.from_user.id)
     
     await call.message.edit_text(text=f'Твой получатель: {recipient_info[2]}', reply_markup=keyboards.recipient_keyboard)
@@ -59,7 +59,7 @@ async def change_recipient(call: CallbackQuery, additional_action:str):
         else: 
             await call.message.edit_text(text=f'❗️ВНИМАНИЕ❗️\nТы можешь поменять получателя ещё {how_many} раз(а)\nТочно меняем?',
                                     reply_markup=keyboards.change_recipient_keyboard)
-        
+
 
 async def confirmed_change_recipient(call: CallbackQuery, additional_action:str):
     '''
@@ -69,9 +69,9 @@ async def confirmed_change_recipient(call: CallbackQuery, additional_action:str)
     if additional_action == 'confrim':
         can_rerol = SantaRepo().GetOneUserByTelegramId(telegram_id=call.from_user.id)
         how_many = can_rerol[4]
-        SantaRepo().UpdateUserDataByUserID(update_param='can_rerol', new_value=how_many-1, user_id=call.from_user.id)
+        SantaRepo().UpdateUserDataByTelegramID(update_param='can_rerol', new_value=how_many-1, user_id=call.from_user.id)
 
-        SantaRepo().UpdateUserDataByUserID(update_param='recipient_id', new_value=None, user_id=call.from_user.id)
+        SantaRepo().UpdateUserDataByTelegramID(update_param='recipient_id', new_value=None, user_id=call.from_user.id)
         await recipient(call)
 
 
@@ -130,7 +130,7 @@ async def recipientwish(call: CallbackQuery):
 
     if wish_my_recipient == None:
         answer_text = 'У вашего получателя нет пожеланий.\nОтправить ему просьюу добавить пожелание?'
-        await call.message.answer(text=answer_text, reply_markup=keyboards.recipientwish_keyboard)
+        await call.message.edit_text(text=answer_text, reply_markup=keyboards.recipientwish_keyboard)
         return
     
     answer_text = f'Пожелания моего получателя: {wish_my_recipient}'
@@ -154,8 +154,7 @@ async def FSM_santa(message: Message, state: FSMContext):
 
     '''
     now_state = await state.get_state()
-    print(1)
-    print(now_state==SantaFSMGet.GET_PHOTO)
+    
     if now_state == SantaFSMGet.GET_TEXT or now_state == SantaFSMChange.CHANGE_TEXT:
         
         await state.update_data(data={"mywish": message.text})
@@ -182,7 +181,15 @@ async def FSM_santa(message: Message, state: FSMContext):
         ]
 
         keyboard = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
-        print(message.photo[-1].file_id)
+        
+        user_data = SantaRepo().GetOneUserByTelegramId(telegram_id=message.from_user.id)
+        old_value = user_data[6]
+        
+        new_value = f'{old_value} {message.photo[-1].file_id}'
+        if old_value == '':
+            new_value = f'{message.photo[-1].file_id}'
+        
+        SantaRepo().UpdateUserDataByTelegramID(update_param='photos_id', new_value=new_value, user_id=message.from_user.id)
         # await bot.delete_message(chat_id=message.chat.id, message_id=message_id)
         # await message.answer_photo(photo=message.photo[-1].file_id, caption=f'Ваше фото:\nВы уверены в своем выборе?', reply_markup=keyboard)
 
@@ -198,14 +205,14 @@ async def update(call:CallbackQuery, state: FSMContext, additional_action:str):
         
         mywish_text = data.get(additional_action)
         
-        SantaRepo().UpdateUserDataByUserID(update_param='my_wish', new_value=mywish_text, user_id=call.from_user.id)
+        SantaRepo().UpdateUserDataByTelegramID(update_param='my_wish', new_value=mywish_text, user_id=call.from_user.id)
 
     elif additional_action == 'photosid':
         data = await state.get_data()
         
         photos_id = data.get(additional_action)
         
-        SantaRepo().UpdateUserDataByUserID(update_param='photos_id', new_value=photos_id, user_id=call.from_user.id)
+        SantaRepo().UpdateUserDataByTelegramID(update_param='photos_id', new_value=photos_id, user_id=call.from_user.id)
 
 
     await call.message.edit_text('Пожелание добавлено!')
@@ -223,7 +230,9 @@ async def change(call:CallbackQuery, state:FSMContext, additional_action:str):
         await state.update_data(data={'message_id':call.message.message_id})
         await call.message.edit_text('Напишите ваши пожелания:')
         await state.set_state(SantaFSMChange.CHANGE_TEXT)
-
+    
+    elif additional_action == 'recipient':
+        
 
 async def setFsm(call:CallbackQuery, state:FSMContext, additional_action:str):
     if additional_action == 'changemywishtext':
@@ -235,7 +244,8 @@ async def setFsm(call:CallbackQuery, state:FSMContext, additional_action:str):
         await state.set_state(SantaFSMGet.GET_PHOTO)
         await state.update_data(data={'message_id':call.message.message_id})
         await call.message.edit_text(text='Введите новые картинки')
-
+    
+    return
     # elif additional_action == '':
 
     # elif additional_action == '':
@@ -247,8 +257,8 @@ async def backToMenu(call: CallbackQuery):
 
 async def request(call: CallbackQuery, addidional_action: str):
     if addidional_action == 'recipientwish':
-        user_info = SantaRepo().GetRecipient(my_telegram_id=call.message.from_user)
-        chat_id = user_info[1]
+        recipient_info = SantaRepo().GetRecipient(my_telegram_id=call.from_user.id)
+        chat_id = recipient_info[1]
         await call.bot.send_message(chat_id=chat_id, text='[SANTA] Заполни сво(Ё) желания')
 
 
