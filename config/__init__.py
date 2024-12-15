@@ -1,1 +1,1 @@
-from .config import bot, dp, db_name
+from .config import bot, dp, db_name, main_text

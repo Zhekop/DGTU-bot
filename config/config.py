@@ -6,3 +6,5 @@ bot = Bot(TOKEN_API)
 dp = Dispatcher()
 
 db_name:str = 'database'
+
+main_text = '🎅Это раздел санты\nВыбери что ты хочешь узнать)'

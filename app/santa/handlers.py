@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.enums.parse_mode import ParseMode
 
 from utils import SantaRepo, SantaFSMGet, SantaFSMChange, keyboards
-from config import bot
+import config
 from asyncio import sleep
 
 async def recipient(call:CallbackQuery):
@@ -29,7 +29,7 @@ async def recipient(call:CallbackQuery):
             if recipients[0][1] == call.from_user.id:
                 await call.message.edit_text('Для тебя не хватает пары(\nАнлаки')
                 await nice_sleep(time=3, text='Главное меню вернется через ', message=call.message, is_del=False)
-                await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboards.keyboard_main_menu)
+                await call.message.edit_text(text=config.main_text, reply_markup=keyboards.keyboard_main_menu)
                 return
 
         recipient_user = random.choice(recipients) # выбираем одного из доступных получателей
@@ -56,7 +56,7 @@ async def show_can_rerol_to_user(call: CallbackQuery, additional_action:str):
         if how_many == 0:
             await call.message.edit_text('Больше нельзя менять получателя')
             await nice_sleep(time=3, text='Главное меню вернется через ', message=call.message, is_del=False)
-            await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboards.keyboard_main_menu)
+            await call.message.edit_text(text=config.main_text, reply_markup=keyboards.keyboard_main_menu)
 
         else: 
             await call.message.edit_text(text=f'❗️ВНИМАНИЕ❗️\nТы можешь поменять получателя ещё {how_many} раз(а)\nТочно меняем?',
@@ -118,7 +118,7 @@ async def recipientwish(call: CallbackQuery):
     if not recipientwish_info:
         await call.message.edit_text(text='У вас нет получателя')
         await nice_sleep(time=3, text='Главное меню вернется через ', message=call.message, is_del=False)
-        await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboards.keyboard_main_menu)
+        await call.message.edit_text(text=config.main_text, reply_markup=keyboards.keyboard_main_menu)
         return
 
     wish_my_recipient = recipientwish_info[5]
@@ -152,7 +152,7 @@ async def FSM_santa(message: Message, state: FSMContext):
             message_id = await state.get_value(key="message_id")
             await state.clear()
             await nice_sleep(time=3, text='Остановлено, главное меню вернется через ', bot=message.bot, is_del=False, message_id=message_id, chat_id=message.chat.id)
-            await bot.edit_message_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', chat_id=message.chat.id, message_id=message_id, reply_markup=keyboards.keyboard_main_menu)
+            await message.bot.edit_message_text(text=config.main_text, chat_id=message.chat.id, message_id=message_id, reply_markup=keyboards.keyboard_main_menu)
             return
 
         await state.update_data(data={"mywish": message.text})
@@ -207,7 +207,7 @@ async def update(call:CallbackQuery, state: FSMContext, additional_action:str):
 
         await call.message.edit_text('Пожелание добавлено!')
         await nice_sleep(time=3, text='Главное меню вернется через ', message=call.message, is_del=False)
-        await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboards.keyboard_main_menu)
+        await call.message.edit_text(text=config.main_text, reply_markup=keyboards.keyboard_main_menu)
         return
 
     elif additional_action == 'photo':
@@ -219,7 +219,7 @@ async def update(call:CallbackQuery, state: FSMContext, additional_action:str):
         message = await call.message.answer('Пожелание добавлено!')
 
         await nice_sleep(time=3, text='Главное меню вернется через ', message=message, is_del=False)
-        await message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboards.keyboard_main_menu)
+        await message.edit_text(text=config.main_text, reply_markup=keyboards.keyboard_main_menu)
 
 
 async def change(call:CallbackQuery, state:FSMContext, additional_action:str):
@@ -269,7 +269,7 @@ async def setFsm(call:CallbackQuery, state:FSMContext, additional_action:str):
 
 async def backToMenu(call: CallbackQuery):
     await call.message.delete()
-    await call.message.answer(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboards.keyboard_main_menu)
+    await call.message.answer(text=config.main_text, reply_markup=keyboards.keyboard_main_menu)
 
 
 async def request(call: CallbackQuery, addidional_action: str):
@@ -279,7 +279,7 @@ async def request(call: CallbackQuery, addidional_action: str):
         chat_id = recipient_info[1]
         await call.bot.send_message(chat_id=chat_id, text='[SANTA] Заполни сво(Ё) пожелания.')
         await nice_sleep(time=3, text='Главное меню вернется через ', message=call.message, is_del=False)
-        await call.message.edit_text(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboards.keyboard_main_menu)
+        await call.message.edit_text(text=config.main_text, reply_markup=keyboards.keyboard_main_menu)
         
 
 def check(chat_id, user_id, name) -> str|bool:

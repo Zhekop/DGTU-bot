@@ -1,10 +1,10 @@
 from aiogram import Router, F
 from aiogram.filters import Command, StateFilter
-from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
-from utils import Database, SantaRepo, keyboard_main_menu
-from utils.FSM import SantaFSMGet, SantaFSMChange
+import config
+from utils import keyboard_main_menu, SantaFSMGet, SantaFSMChange
 
 from .handlers import (backToMenu, recipient, mywish, recipientwish, 
                        FSM_santa, update, change, setFsm, check, show_can_rerol_to_user, request)
@@ -20,7 +20,7 @@ async def getSantaMenu(message:Message):
         await message.answer(text=text)
         return
 
-    await message.answer(text='🎅Это раздел санты\nВыбери что ты хочешь узнать)', reply_markup=keyboard_main_menu)
+    await message.answer(text=config.main_text, reply_markup=keyboard_main_menu)
 
 
 @RouterSanta.callback_query(F.data.startswith('santa'))
