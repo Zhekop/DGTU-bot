@@ -22,7 +22,7 @@ recipient_inline_keyboard = [
 recipient_keyboard = InlineKeyboardMarkup(inline_keyboard=recipient_inline_keyboard)
 
 change_recipient_inline_keyboard = [
-    [InlineKeyboardButton(text='Да, меняем', callback_data='santa_reschange_confrim')],
+    [InlineKeyboardButton(text='Да, меняем', callback_data='santa_change_recipient')],
     [InlineKeyboardButton(text='Нет, оставим', callback_data='santa_get_recipient')],
     inline_keyboard_back_to_menu[0] # кнопка "назад в меню"
 ]

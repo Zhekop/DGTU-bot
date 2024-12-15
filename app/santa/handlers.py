@@ -41,9 +41,9 @@ async def recipient(call:CallbackQuery):
     await call.message.edit_text(text=f'Твой получатель: {recipient_info[2]}', reply_markup=keyboards.recipient_keyboard)
 
 
-async def change_recipient(call: CallbackQuery, additional_action:str):
+async def show_can_rerol_to_user(call: CallbackQuery, additional_action:str):
     '''
-    смена получателя
+    показывает количество попыток
     '''
     await call.answer()
 
@@ -59,20 +59,6 @@ async def change_recipient(call: CallbackQuery, additional_action:str):
         else: 
             await call.message.edit_text(text=f'❗️ВНИМАНИЕ❗️\nТы можешь поменять получателя ещё {how_many} раз(а)\nТочно меняем?',
                                     reply_markup=keyboards.change_recipient_keyboard)
-
-
-async def confirmed_change_recipient(call: CallbackQuery, additional_action:str):
-    '''
-    удаляем действующего получателя
-    '''
-
-    if additional_action == 'confrim':
-        can_rerol = SantaRepo().GetOneUserByTelegramId(telegram_id=call.from_user.id)
-        how_many = can_rerol[4]
-        SantaRepo().UpdateUserDataByTelegramID(update_param='can_rerol', new_value=how_many-1, user_id=call.from_user.id)
-
-        SantaRepo().UpdateUserDataByTelegramID(update_param='recipient_id', new_value=None, user_id=call.from_user.id)
-        await recipient(call)
 
 
 async def mywish(call: CallbackQuery, state: FSMContext):
@@ -232,6 +218,12 @@ async def change(call:CallbackQuery, state:FSMContext, additional_action:str):
         await state.set_state(SantaFSMChange.CHANGE_TEXT)
     
     elif additional_action == 'recipient':
+        can_rerol = SantaRepo().GetOneUserByTelegramId(telegram_id=call.from_user.id)
+        how_many = can_rerol[4]
+        SantaRepo().UpdateUserDataByTelegramID(update_param='can_rerol', new_value=how_many-1, user_id=call.from_user.id)
+
+        SantaRepo().UpdateUserDataByTelegramID(update_param='recipient_id', new_value=None, user_id=call.from_user.id)
+        await recipient(call)
         
 
 async def setFsm(call:CallbackQuery, state:FSMContext, additional_action:str):

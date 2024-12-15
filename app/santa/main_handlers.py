@@ -7,7 +7,7 @@ from utils import Database, SantaRepo, keyboard_main_menu
 from utils.FSM import SantaFSMGet, SantaFSMChange
 
 from .handlers import (backToMenu, recipient, change_recipient, mywish, recipientwish, 
-                       FSM_santa, update, change, setFsm, check, confirmed_change_recipient, request)
+                       FSM_santa, update, change, setFsm, check, show_can_rerol_to_user, request)
 
 RouterSanta = Router()
 
@@ -57,11 +57,8 @@ async def santaCallback(call: CallbackQuery, state: FSMContext):
     elif action == 'request':
         await request(call, additional_action)
 
-    elif action == 'res':
-        await change_recipient(call, additional_action=additional_action)
-
     elif action == 'reschange':
-        await confirmed_change_recipient(call, additional_action=additional_action)
+        await show_can_rerol_to_user(call, additional_action=additional_action)
 
 
 @RouterSanta.message(
