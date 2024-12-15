@@ -61,7 +61,7 @@ class SantaRepo:
     \n Вернет всех "свободных" пользователей
     \n Тех у кого нет санты
         '''
-        all_users = self.Count()
+        all_users = self.RowCount()
         
         # user_wishout_recipient_id = Database().GetAll(data='tg_id', table_name='Santa', find_param='recipient_id', find_value=0)
         # len_user_wishout_recipient = len(user_wishout_recipient_id) #юзеры которые ничего не получают (кол-во)
@@ -104,7 +104,7 @@ class SantaRepo:
         '''
         Очищается таблица Users ПОЛНОСТЬЮ
         '''
-        all_users = self.Count()
+        all_users = self.RowCount()
         try:
             for i in range(1, all_users+1):
                 Database().DeleteRow(table_name="Santa", param='id', value=i)

@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from utils import Database, SantaRepo, keyboard_main_menu
 from utils.FSM import SantaFSMGet, SantaFSMChange
 
-from .handlers import (backToMenu, recipient, change_recipient, mywish, recipientwish, 
+from .handlers import (backToMenu, recipient, mywish, recipientwish, 
                        FSM_santa, update, change, setFsm, check, show_can_rerol_to_user, request)
 
 RouterSanta = Router()
@@ -27,7 +27,7 @@ async def getSantaMenu(message:Message):
 async def santaCallback(call: CallbackQuery, state: FSMContext):
     data = call.data.split('_') 
     action = data[1]
-    print(action)
+    print(call.from_user.full_name, action, call.message.date.date())
     if action == 'backtomenu':
         await backToMenu(call)
         return
@@ -46,10 +46,10 @@ async def santaCallback(call: CallbackQuery, state: FSMContext):
             await recipientwish(call)
 
     elif action == 'update':
-        await update(call, state, additional_action=additional_action)
+        await update(call, state, additional_action)
             
     elif action == 'change':
-        await change(call, state, additional_action=additional_action)
+        await change(call, state, additional_action)
     
     elif action == 'setfsm':
         await setFsm(call, state, additional_action)
@@ -58,7 +58,7 @@ async def santaCallback(call: CallbackQuery, state: FSMContext):
         await request(call, additional_action)
 
     elif action == 'reschange':
-        await show_can_rerol_to_user(call, additional_action=additional_action)
+        await show_can_rerol_to_user(call, additional_action)
 
 
 @RouterSanta.message(
